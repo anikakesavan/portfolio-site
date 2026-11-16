@@ -1,40 +1,51 @@
-# portfolio-site
+# Anika Kesavan, portfolio
 
-A clean, no-framework personal portfolio template: About, Projects, Skills,
-and a validated Contact form. Plain HTML/CSS/JS, no build step, no
-dependencies. Fill in your own info and it's ready to deploy.
+Next.js (App Router), TypeScript, Tailwind CSS v4, Framer Motion, and Three.js through React Three Fiber. Exports to plain static files.
 
-## Running it
-
-Open `index.html` directly in a browser, or serve it locally:
+## Run it
 
 ```bash
-python3 -m http.server 8000
-# then visit http://localhost:8000
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # writes the finished site to ./out
 ```
 
-## Customizing
+## Before you share it
 
-- **Your info**: edit the placeholder text directly in `index.html` (name,
-  tagline, About paragraph, GitHub/LinkedIn/email links, skills list).
-- **Projects**: edit the `PROJECTS` array in `projects.js` — each entry is a
-  `{ title, description, tags, link }` object rendered automatically.
-- **Contact form**: validation logic lives in `validation.js` and is unit
-  tested. The form currently only validates client-side; wire the `submit`
-  handler in `index.html` up to a real email service (e.g. Formspree) or your
-  own backend to actually send messages.
+1. `src/data/site.ts`: add the email address you want public. Until then the contact button opens LinkedIn.
+2. `src/data/projects.ts`: each project has a `todo` list of what is missing. Fill in stack, role, screenshots, links.
+3. `src/data/content.ts`: add RescueTime dates and details, and check the personal interests.
+4. Set `showDrafts: true` in `site.ts` while editing to see each page's "Still to add" box. Keep it false on the live site.
 
-## Deploying
+## Where things live
 
-This is fully static, so it works as-is on GitHub Pages, Netlify, or Vercel.
-For GitHub Pages: Settings → Pages → set the source to the `main` branch.
+| You want to change        | Edit                                   |
+| ------------------------- | -------------------------------------- |
+| Name, email, links, menu  | `src/data/site.ts`                     |
+| Projects and case studies | `src/data/projects.ts`                 |
+| About, experience, skills | `src/data/content.ts`                  |
+| Colors and fonts          | `src/app/globals.css` (`@theme` block) |
+| Section order             | `src/app/page.tsx`                     |
 
-## Running tests
+### Add a project
 
-```bash
-node --test
-```
+Copy an entry in `projects.ts`, give it a new `slug`, and pick a `preview`. It then shows up in the work list, the desk's file window, the terminal (`ls`, `open <slug>`), and gets its own page at `/work/<slug>/`.
 
-## License
+For screenshots, put files in `public/work/` and list them under `images`. For a new animated preview, add a component to `src/components/Previews.tsx`.
 
-MIT
+## Components
+
+- `Scene3D.tsx`: the contour terrain in the hero (custom shader) and the draggable globe. Both stop rendering when off screen.
+- `Desk.tsx`: draggable windows and the working terminal.
+- `Previews.tsx`: one animated scene per project.
+- `Sections.tsx`: statement, work, about, experience, skills, achievements, contact.
+- `Providers.tsx`: smooth scrolling (Lenis) and the page-transition curtain.
+- `Cursor.tsx`, `Nav.tsx`, `ui.tsx`: cursor, menu, and shared pieces (`TLink`, `Magnetic`, `Letters`).
+
+## Accessibility and motion
+
+Keyboard works throughout: skip link, focus rings, a menu that traps focus and closes on Escape, and a terminal that is a normal text input. With "reduce motion" turned on, smooth scrolling, the cursor, page transitions, and looping animations switch off, and the 3D scenes hold still.
+
+## Deploy
+
+GitHub Pages: `.github/workflows/deploy.yml` builds and publishes on every push to `main`. One-time setup: repo Settings, Pages, set Source to "GitHub Actions". Vercel also works: import the repo, no settings needed.
